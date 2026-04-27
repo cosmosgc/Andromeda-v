@@ -176,66 +176,40 @@ public sealed partial class ParticleSystem : EntitySystem
         emitter.Overrides ??= new ParticleRuntimeOverrides();
         var dst = emitter.Overrides;
 
-        // GAZE UPON THY UNHOLY IF STATEMENT BLOCK AND DESPAIR
-        if (src.StartColor.HasValue)
-            dst.StartColor = src.StartColor;
-        if (src.EndColor.HasValue)
-            dst.EndColor = src.EndColor;
-        if (src.ColorOverride.HasValue)
-            dst.ColorOverride = src.ColorOverride;
-        if (src.Shader != null)
-            dst.Shader = src.Shader;
-        if (src.RenderLayer.HasValue)
-            dst.RenderLayer = src.RenderLayer;
-        if (src.ParticleSize.HasValue)
-            dst.ParticleSize = src.ParticleSize;
-        if (src.SizeVariance.HasValue)
-            dst.SizeVariance = src.SizeVariance;
-        if (src.StretchFactor.HasValue)
-            dst.StretchFactor = src.StretchFactor;
-        if (src.Lifetime.HasValue)
-            dst.Lifetime = src.Lifetime;
-        if (src.LifetimeVariance.HasValue)
-            dst.LifetimeVariance = src.LifetimeVariance;
-        if (src.Speed.HasValue)
-            dst.Speed = src.Speed;
-        if (src.SpeedVariance.HasValue)
-            dst.SpeedVariance = src.SpeedVariance;
-        if (src.ConstantForce.HasValue)
-            dst.ConstantForce = src.ConstantForce;
-        if (src.Gravity.HasValue)
-            dst.Gravity = src.Gravity;
-        if (src.Drag.HasValue)
-            dst.Drag = src.Drag;
-        if (src.TerminalSpeed.HasValue)
-            dst.TerminalSpeed = src.TerminalSpeed;
-        if (src.NoiseStrength.HasValue)
-            dst.NoiseStrength = src.NoiseStrength;
-        if (src.NoiseFrequency.HasValue)
-            dst.NoiseFrequency = src.NoiseFrequency;
-        if (src.InheritVelocity.HasValue)
-            dst.InheritVelocity = src.InheritVelocity;
-        if (src.StartRotation.HasValue)
-            dst.StartRotation = src.StartRotation;
-        if (src.StartRotationVariance.HasValue)
-            dst.StartRotationVariance = src.StartRotationVariance;
-        if (src.RotationSpeed.HasValue)
-            dst.RotationSpeed = src.RotationSpeed;
-        if (src.RotationSpeedVariance.HasValue)
-            dst.RotationSpeedVariance = src.RotationSpeedVariance;
-        if (src.EmissionRate.HasValue)
-            dst.EmissionRate = src.EmissionRate;
-        if (src.MaxCount.HasValue)
-            dst.MaxCount = src.MaxCount;
-        if (src.Duration.HasValue)
-            dst.Duration = src.Duration;
-        if (src.SpreadAngle.HasValue)
-            dst.SpreadAngle = src.SpreadAngle;
-        if (src.EmitAngle.HasValue)
+
+        dst.StartColor = src.StartColor ?? dst.StartColor;
+        dst.EndColor = src.EndColor ?? dst.EndColor;
+        dst.ColorOverride = src.ColorOverride ?? dst.ColorOverride;
+        dst.Shader = src.Shader ?? dst.Shader;
+        dst.RenderLayer = src.RenderLayer ?? dst.RenderLayer;
+        dst.ParticleSize = src.ParticleSize ?? dst.ParticleSize;
+        dst.SizeVariance = src.SizeVariance ?? dst.SizeVariance;
+        dst.StretchFactor = src.StretchFactor ?? dst.StretchFactor;
+        dst.Lifetime = src.Lifetime ?? dst.Lifetime;
+        dst.LifetimeVariance = src.LifetimeVariance ?? dst.LifetimeVariance;
+        dst.Speed = src.Speed ?? dst.Speed;
+        dst.SpeedVariance = src.SpeedVariance ?? dst.SpeedVariance;
+        dst.ConstantForce = src.ConstantForce ?? dst.ConstantForce;
+        dst.Gravity = src.Gravity ?? dst.Gravity;
+        dst.Drag = src.Drag ?? dst.Drag;
+        dst.TerminalSpeed = src.TerminalSpeed ?? dst.TerminalSpeed;
+        dst.NoiseStrength = src.NoiseStrength ?? dst.NoiseStrength;
+        dst.NoiseFrequency = src.NoiseFrequency ?? dst.NoiseFrequency;
+        dst.InheritVelocity = src.InheritVelocity ?? dst.InheritVelocity;
+        dst.StartRotation = src.StartRotation ?? dst.StartRotation;
+        dst.StartRotationVariance = src.StartRotationVariance ?? dst.StartRotationVariance;
+        dst.RotationSpeed = src.RotationSpeed ?? dst.RotationSpeed;
+        dst.RotationSpeedVariance = src.RotationSpeedVariance ?? dst.RotationSpeedVariance;
+        dst.EmissionRate = src.EmissionRate ?? dst.EmissionRate;
+        dst.MaxCount = src.MaxCount ?? dst.MaxCount;
+        dst.Duration = src.Duration ?? dst.Duration;
+        dst.SpreadAngle = src.SpreadAngle ?? dst.SpreadAngle;
+
+        if (src.EmitAngle is { } emitAngle)
         {
-            dst.EmitAngle = src.EmitAngle;
+            dst.EmitAngle = emitAngle;
             if (emitter.TargetEntity == null && emitter.TargetPosition == null)
-                emitter.EffectiveEmitAngle = (float)src.EmitAngle.Value.Theta;
+                emitter.EffectiveEmitAngle = (float)emitAngle.Theta;
         }
     }
 
@@ -770,33 +744,37 @@ public sealed partial class ParticleSystem : EntitySystem
         switch (emitter.Proto.Sprite)
         {
             case SpriteSpecifier.Rsi rsi:
-            {
-                RSI? resource;
-                try
                 {
-                    var path = rsi.RsiPath.IsRooted
-                        ? rsi.RsiPath
-                        : SpriteSpecifierSerializer.TextureRoot / rsi.RsiPath;
-                    resource = _resourceCache.GetResource<RSIResource>(path).RSI;
-                }
-                catch { break; }
+                    RSI? resource;
+                    try
+                    {
+                        var path = rsi.RsiPath.IsRooted
+                            ? rsi.RsiPath
+                            : SpriteSpecifierSerializer.TextureRoot / rsi.RsiPath;
+                        resource = _resourceCache.GetResource<RSIResource>(path).RSI;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Could not resolve RSI resource '{rsi.RsiPath}' for particle prototype {emitter.Proto.ID}: {e}");
+                        break;
+                    }
 
-                if (!resource.TryGetState(rsi.RsiState, out var state))
+                    if (!resource.TryGetState(rsi.RsiState, out var state))
+                        break;
+
+                    emitter.Frames = state.GetFrames(RsiDirection.South);
+                    emitter.Delays = state.GetDelays();
                     break;
-
-                emitter.Frames = state.GetFrames(RsiDirection.South);
-                emitter.Delays = state.GetDelays();
-                break;
-            }
-            case SpriteSpecifier.Texture tex:
-            {
-                try { emitter.Frames = new[] { _spriteSystem.Frame0(tex) }; }
-                catch
-                {
-                    /* this space intentionally left blank. */
                 }
-                break;
-            }
+            case SpriteSpecifier.Texture tex:
+                {
+                    try { emitter.Frames = new[] { _spriteSystem.Frame0(tex) }; }
+                    catch (Exception e)
+                    {
+                        Log.Error($"Could not resolve sprite texture '{tex.TexturePath}' for particle prototype {emitter.Proto.ID}: {e}");
+                    }
+                    break;
+                }
         }
     }
 
