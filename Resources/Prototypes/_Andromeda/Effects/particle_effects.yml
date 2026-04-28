@@ -1,0 +1,148 @@
+- type: particleEffect
+  id: HeartFlutter
+  shader: unshaded
+  sprite:
+    sprite: _Andromeda/Effects/hearts.rsi
+    state: small-heart
+  startColor: "#FF6F9FF2"
+  endColor: "#FFD1DC00"
+  duration: 5
+  particleSize: 0.09
+  sizeVariance: 0.025
+  lifetime: 1.6s
+  lifetimeVariance: 0.35s
+  speed: 0.75
+  speedVariance: 0.35
+  gravity: -1
+  drag: 0.45
+  spreadAngle: 70
+  emitAngle: 0
+  maxCount: 8
+  emissionRate: 1
+  burst: true
+  worldSpace: true
+  terminalSpeed: 1.5
+  # constantForce: (0, 0.32)
+  noiseStrength: 0.55
+  noiseFrequency: 1.8
+  rotationSpeed: 45
+  rotationSpeedVariance: 90
+  shape:
+    type: CircleFill
+    radius: 0.16
+  sizeOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.2
+  speedOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.1
+  alphaOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0
+  colorOverLifetime:
+    - time: 0
+      color: "#FF6F9FFC"
+    - time: 1
+      color: "#FFD1E1CC"
+
+- type: particleEffect
+  id: SmokePuffRoom
+  sprite:
+    sprite: _Starfall/Particles/generic.rsi
+    state: curl
+  particleSize: 0.2
+  sizeVariance: 0.08
+  lifetime: 4s
+  lifetimeVariance: 0.8s
+  duration: 0
+  speed: 0.4
+  speedVariance: 0.35
+  gravity: -0.2
+  drag: 0.8
+  spreadAngle: 360
+  emitAngle: 0
+  maxCount: 100
+  emissionRate: 25
+  burst: false
+  worldSpace: true
+  constantForce: (0, 0.2)
+  noiseStrength: 0.5
+  noiseFrequency: 1.4
+  rotationSpeed: 30
+  rotationSpeedVariance: 80
+  shape:
+    type: Box
+    boxExtents: (1, 0.5)
+  sizeOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.2
+  speedOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.1
+  alphaOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0
+  colorOverLifetime:
+    - time: 0
+      color: "#9AA3A8FF"
+    - time: 1
+      color: "#30363ACC"
+
+- type: particleEffect
+  id: CryoMist
+  sprite:
+    sprite: _Starfall/Particles/generic.rsi
+    state: curl
+  particleSize: 0.16
+  sizeVariance: 0.07
+  lifetime: 2.8s
+  lifetimeVariance: 0.7s
+  duration: 0
+  speed: 0.7
+  speedVariance: 0.35
+  gravity: -0.4
+  drag: 0.45
+  spreadAngle: 360
+  emitAngle: 0
+  maxCount: 40
+  emissionRate: 15
+  burst: false
+  worldSpace: true
+  terminalSpeed: 0.2
+  constantForce: (0, 0.18)
+  noiseStrength: 0.65
+  noiseFrequency: 0.9
+  rotationSpeed: 12
+  rotationSpeedVariance: 36
+  sizeOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.2
+  speedOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0.1
+  alphaOverLifetime:
+    - time: 0
+      value: 1
+    - time: 1
+      value: 0
+  colorOverLifetime:
+    - time: 0
+      color: "#D9FBFF7A"
+    - time: 1
+      color: "#73A8FF00"

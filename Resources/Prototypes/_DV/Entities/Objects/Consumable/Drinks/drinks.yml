@@ -132,6 +132,8 @@
   - type: Icon
     sprite: _DV/Objects/Consumable/Drinks/doubleicecreamglass.rsi
     state: icon
+  - type: ParticleEmitter
+    effect: CryoMist
 
 - type: entity
   parent: DrinkGlass
